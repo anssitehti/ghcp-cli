@@ -1,4 +1,4 @@
-# GitHub Copilot CLI Demo: Safe Development Environment
+# GitHub Copilot CLI: Secure Development Environment
 
 A demonstration repository showcasing how to use **GitHub Copilot** in **VS Code** with a **DevContainer** environment to run coding agents in a safe and secure sandbox.
 
@@ -66,6 +66,65 @@ yolo "create a new function for..."
 
 # View available skills and features
 copilot --help
+```
+
+## Adding Plugins and Marketplaces
+
+The Copilot CLI environment comes pre-configured with popular plugins and marketplace integrations. You can customize this by editing the `.devcontainer/onCreateCommand.sh` file.
+
+### Adding a New Marketplace
+
+1. **Edit `.devcontainer/onCreateCommand.sh`**:
+   ```bash
+   declare -A MARKETPLACE_REPOS=(
+       [my-marketplace]="owner/repo"  # Add your marketplace here
+       [claude-plugins-official]="anthropics/claude-plugins-official"
+       [microsoft-docs-marketplace]="microsoftdocs/mcp"
+   )
+   ```
+
+2. **Specify marketplace repository** in the format `owner/repo` where the marketplace is hosted on GitHub.
+
+### Adding Plugins to a Marketplace
+
+1. **Edit the `PLUGINS` array** in `.devcontainer/onCreateCommand.sh`:
+   ```bash
+   declare -A PLUGINS=(
+       [my-marketplace]="plugin1 plugin2 plugin3"
+       [claude-plugins-official]="context7 feature-dev code-review code-simplifier frontend-design skill-creator"
+       [microsoft-docs-marketplace]="microsoft-docs"
+   )
+   ```
+
+2. **Install plugins** by:
+   - Listing them by name, separated by spaces
+   - Organizing them under their corresponding marketplace name
+   - When the container starts, plugins are automatically installed
+
+### Applying Changes
+
+After editing `onCreateCommand.sh`, rebuild the Dev Container:
+
+1. Open the VS Code **Command Palette** (Ctrl+Shift+P / Cmd+Shift+P)
+2. Run **Dev Containers: Rebuild Container**
+3. Wait for the container to rebuild and plugins to install
+
+### Manual Plugin Management (Advanced)
+
+You can also manage plugins directly in the terminal:
+
+```bash
+# Add a marketplace
+copilot plugin marketplace add owner/repo
+
+# Install a plugin from a marketplace
+copilot plugin install plugin-name@marketplace-name
+
+# List installed plugins
+copilot plugin list
+
+# Remove a plugin
+copilot plugin remove plugin-name
 ```
 
 ## Learn More
