@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # ============================================================================
 # CONFIGURATION - Modify these to add/remove marketplaces and plugins
@@ -9,8 +9,9 @@ set -e
 # Format: [marketplace-name]="owner/repo"
 # Note: awesome-copilot and copilot-plugins are included by default
 declare -A MARKETPLACE_REPOS=(
-    [claude-plugins-official]="anthropics/claude-plugins-official"
+    #[claude-plugins-official]="anthropics/claude-plugins-official"
     [microsoft-docs-marketplace]="microsoftdocs/mcp"
+    [fabric-collection]="microsoft/skills-for-fabric"
 )
 
 # Define plugins organized by marketplace
@@ -18,6 +19,7 @@ declare -A MARKETPLACE_REPOS=(
 declare -A PLUGINS=(
     [claude-plugins-official]="context7 feature-dev code-review code-simplifier frontend-design skill-creator"
     [microsoft-docs-marketplace]="microsoft-docs"
+    [fabric-collection]="fabric-skills"
 )
 
 # ============================================================================
@@ -33,15 +35,23 @@ NC='\033[0m' # No Color
 echo 'alias yolo="copilot --allow-all --model claude-haiku-4.5"' >> ~/.bashrc
 echo -e "${BRIGHT_CYAN}✓${NC} Added yolo alias"
 
-# Add custom marketplaces
+# Add custom marketplaces (skip if already installed)
 for marketplace_name in "${!MARKETPLACE_REPOS[@]}"; do
     repo="${MARKETPLACE_REPOS[$marketplace_name]}"
-    echo -e "${DIM}[marketplace]${NC} ${BRIGHT_CYAN}$marketplace_name${NC} ${DIM}($repo)${NC}"
-    copilot plugin marketplace add "$repo"
+    if copilot plugin marketplace list 2>/dev/null | grep -qF "$marketplace_name"; then
+        echo -e "${DIM}[marketplace]${NC} ${BRIGHT_CYAN}$marketplace_name${NC} ${DIM}already installed, skipping${NC}"
+    else
+        echo -e "${DIM}[marketplace]${NC} ${BRIGHT_CYAN}$marketplace_name${NC} ${DIM}($repo)${NC}"
+        copilot plugin marketplace add "$repo"
+    fi
 done
 
-# Install plugins grouped by marketplace
+# Install plugins grouped by marketplace (skip if marketplace not installed)
 for marketplace_name in "${!PLUGINS[@]}"; do
+    if ! copilot plugin marketplace list 2>/dev/null | grep -qF "$marketplace_name"; then
+        echo -e "${DIM}[plugins]${NC} ${BRIGHT_CYAN}$marketplace_name${NC} ${DIM}marketplace not installed, skipping plugins${NC}"
+        continue
+    fi
     plugins="${PLUGINS[$marketplace_name]}"
     echo ""
     echo -e "${DIM}[plugins]${NC} ${BRIGHT_CYAN}$marketplace_name${NC}"
