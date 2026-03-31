@@ -23,7 +23,7 @@ The entire development environment is containerized, ensuring that any Copilot a
 1. **Clone or open this repository** in VS Code
 2. **Open in Dev Container**: VS Code will detect the `.devcontainer` configuration and prompt you to "Reopen in Container"
 3. **Wait for initialization**: The container will build and install the GitHub Copilot CLI automatically
-4. **Start using Copilot**: Once ready, the `copilot` command is available in the terminal
+4. **Start using Copilot**: Once ready, the `copilot` and `yolo` commands are available in the terminal
 
 ## Key Features
 
@@ -68,69 +68,61 @@ yolo "create a new function for..."
 copilot --help
 ```
 
-## Adding Plugins and Marketplaces
+## Customization
 
-The Copilot CLI environment comes pre-configured with popular plugins and marketplace integrations. You can customize this by editing the `.devcontainer/onCreateCommand.sh` file.
+All configuration lives in `.devcontainer/scripts/setup-copilot.sh`. The orchestrator `.devcontainer/onCreateCommand.sh` calls setup scripts on container creation.
 
 ### Adding a New Marketplace
 
-1. **Edit `.devcontainer/onCreateCommand.sh`**:
-   ```bash
-   declare -A MARKETPLACE_REPOS=(
-       [my-marketplace]="owner/repo"  # Add your marketplace here
-       [claude-plugins-official]="anthropics/claude-plugins-official"
-       [microsoft-docs-marketplace]="microsoftdocs/mcp"
-   )
-   ```
+Edit the `MARKETPLACE_REPOS` array in `.devcontainer/scripts/setup-copilot.sh`:
 
-2. **Specify marketplace repository** in the format `owner/repo` where the marketplace is hosted on GitHub.
+```bash
+declare -A MARKETPLACE_REPOS=(
+    [my-marketplace]="owner/repo"
+    [microsoft-docs-marketplace]="microsoftdocs/mcp"
+)
+```
 
-### Adding Plugins to a Marketplace
+### Adding Plugins
 
-1. **Edit the `PLUGINS` array** in `.devcontainer/onCreateCommand.sh`:
-   ```bash
-   declare -A PLUGINS=(
-       [my-marketplace]="plugin1 plugin2 plugin3"
-       [claude-plugins-official]="context7 feature-dev code-review code-simplifier frontend-design skill-creator"
-       [microsoft-docs-marketplace]="microsoft-docs"
-   )
-   ```
+Edit the `PLUGINS` array in `.devcontainer/scripts/setup-copilot.sh`:
 
-2. **Install plugins** by:
-   - Listing them by name, separated by spaces
-   - Organizing them under their corresponding marketplace name
-   - When the container starts, plugins are automatically installed
+```bash
+declare -A PLUGINS=(
+    [my-marketplace]="plugin1 plugin2 plugin3"
+    [microsoft-docs-marketplace]="microsoft-docs"
+)
+```
+
+Plugins are listed by name, separated by spaces, under their corresponding marketplace.
+
+### Adding Skills
+
+Skills are reusable AI instruction sets installed via [skills.sh](https://skills.sh/). Edit the `SKILLS_TO_INSTALL` array in `.devcontainer/scripts/setup-copilot.sh`:
+
+```bash
+declare -A SKILLS_TO_INSTALL=(
+    ["anthropics/skills"]="skill-creator"
+    ["my-org/my-skills"]="skill-a skill-b"
+)
+```
+
+- **Key**: the `owner/repo` hosting the skills
+- **Value**: space-separated list of skill names to install from that repo
 
 ### Applying Changes
 
-After editing `onCreateCommand.sh`, rebuild the Dev Container:
+After editing `setup-copilot.sh`, rebuild the Dev Container:
 
 1. Open the VS Code **Command Palette** (Ctrl+Shift+P / Cmd+Shift+P)
 2. Run **Dev Containers: Rebuild Container**
-3. Wait for the container to rebuild and plugins to install
-
-### Manual Plugin Management (Advanced)
-
-You can also manage plugins directly in the terminal:
-
-```bash
-# Add a marketplace
-copilot plugin marketplace add owner/repo
-
-# Install a plugin from a marketplace
-copilot plugin install plugin-name@marketplace-name
-
-# List installed plugins
-copilot plugin list
-
-# Remove a plugin
-copilot plugin remove plugin-name
-```
+3. Wait for the container to rebuild and install
 
 ## Learn More
 
 - [GitHub Copilot CLI Documentation](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line)
 - [GitHub Copilot CLI GitHub Repository](https://github.com/githubnext/copilot-cli)
+- [skills.sh — Browse & discover AI skills](https://skills.sh/)
 - [VS Code DevContainers Documentation](https://code.visualstudio.com/docs/devcontainers/containers)
 - [Development Containers Specification](https://containers.dev/)
 - [VS Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview)

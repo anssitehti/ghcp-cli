@@ -23,11 +23,6 @@ Thumbs.db
 .history/
 *.code-workspace
 
-# Dev Container
-.devcontainer/*/
-!.devcontainer/devcontainer.json
-!.devcontainer/postCreateCommand.sh
-
 # Environment variables
 .env
 .env.local
