@@ -5,26 +5,28 @@ set -euo pipefail
 # CONFIGURATION - Modify these to add/remove marketplaces, plugins, and skills
 # ============================================================================
 
+# Default model for the yolo alias (full permissions mode)
+DEFAULT_COPILOT_MODEL="gpt-5.4-mini"
+
 # Define custom marketplaces and their repository locations
 # Format: [marketplace-name]="owner/repo"
 # Note: awesome-copilot and copilot-plugins are included by default
 declare -A MARKETPLACE_REPOS=(
-    #[claude-plugins-official]="anthropics/claude-plugins-official"
-    [microsoft-docs-marketplace]="microsoftdocs/mcp"
+
 )
 
 # Define plugins organized by marketplace
 # Format: [marketplace-name]="plugin1 plugin2 plugin3"
 # Note: plugins for commented-out marketplaces are safely skipped
 declare -A PLUGINS=(
-    [claude-plugins-official]="context7 feature-dev code-review code-simplifier frontend-design skill-creator"
-    [microsoft-docs-marketplace]="microsoft-docs"
+    [awesome-copilot]="microsoft-docs copilot-sdk"
 )
 
 # Define skills to install via npx skills
 # Format: ["owner/repo"]="skill1 skill2 skill3"
 declare -A SKILLS_TO_INSTALL=(
-    ["anthropics/skills"]="skill-creator"
+    ["anthropics/skills"]="skill-creator frontend-design"
+    ["upstash/context7"]="context7-cli"
 )
 
 # ============================================================================
@@ -37,7 +39,11 @@ DIM='\033[2;37m'
 NC='\033[0m' # No Color
 
 # Add yolo alias for Copilot AI (full permissions mode)
-echo 'alias yolo="copilot --allow-all --model claude-haiku-4.5"' >> ~/.bashrc
+YoloAlias="alias yolo=\"copilot --allow-all --model $DEFAULT_COPILOT_MODEL\""
+if grep -qF 'alias yolo=' ~/.bashrc 2>/dev/null; then
+    sed -i '/alias yolo=/d' ~/.bashrc
+fi
+echo "$YoloAlias" >> ~/.bashrc
 echo -e "${BRIGHT_CYAN}✓${NC} Added yolo alias"
 
 # Add custom marketplaces (skip if already installed)
