@@ -1,3 +1,4 @@
+
 #!/bin/bash
 set -euo pipefail
 
@@ -19,14 +20,15 @@ declare -A MARKETPLACE_REPOS=(
 # Format: [marketplace-name]="plugin1 plugin2 plugin3"
 # Note: plugins for commented-out marketplaces are safely skipped
 declare -A PLUGINS=(
-    [awesome-copilot]="microsoft-docs copilot-sdk"
+    [awesome-copilot]="copilot-sdk"
 )
 
 # Define skills to install via npx skills
 # Format: ["owner/repo"]="skill1 skill2 skill3"
 declare -A SKILLS_TO_INSTALL=(
-    ["anthropics/skills"]="skill-creator frontend-design"
+    ["anthropics/skills"]="skill-creator"
     ["upstash/context7"]="context7-cli"
+    ["mattpocock/skills"]="write-a-prd grill-me"
 )
 
 # ============================================================================
