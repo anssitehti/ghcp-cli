@@ -3,7 +3,14 @@
 	"image": "mcr.microsoft.com/devcontainers/base:noble",
 	"features": {
 		"ghcr.io/devcontainers/features/copilot-cli:1": {},
-		"ghcr.io/devcontainers/features/node:1": {}
+		"ghcr.io/devcontainers/features/node:2.0.0": {}
 	},
-	"onCreateCommand": "bash .devcontainer/onCreateCommand.sh"
+	"onCreateCommand": "bash .devcontainer/onCreateCommand.sh",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"esbenp.prettier-vscode"
+			]
+		}
+	}
 }
