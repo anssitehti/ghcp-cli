@@ -28,7 +28,7 @@ declare -A PLUGINS=(
 declare -A SKILLS_TO_INSTALL=(
     ["anthropics/skills"]="skill-creator"
     ["upstash/context7"]="context7-cli"
-    ["mattpocock/skills"]="write-a-prd grill-me"
+    ["mattpocock/skills"]="grill-me grilling"
 )
 
 # ============================================================================
